@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import api from '../../services/api';
 
 import DateField from '../../components/date';
+import Switch from '@material-ui/core/Switch';
+
+import './styles.css'
 
 export default class form extends Component {
 
@@ -42,7 +45,7 @@ export default class form extends Component {
   }
 
   onChangeWhatsapp(e) {
-    this.setState({ whatsapp: e.target.value })
+    this.setState({ whatsapp: e.target.checked })
   }
   onChangeMarca(e) {
     this.setState({ marca: e.target.value })
@@ -134,48 +137,66 @@ export default class form extends Component {
     return (
       <>
         <h1>
-          Manipulando formulários com Node.js, Express e React
+          Form App
         </h1>
           <form onSubmit={this.onSubmit}>
             <fieldset>
-              <legend>Novo Usuário</legend>
-              Nome completo: *<br />
-              <input type="text" value={this.state.nome}
-                onChange={this.onChangeNome} /><br />
-              Telefone: <br />
-              <input type="text" value={this.state.telefone}
-                onChange={this.onChangeTelefone} /><br />
-              Possui WhatsApp?:  
-              <input type="checkbox" checked={this.state.whatsapp}
-                onChange={this.onChangeWhatsapp} />
-              <br />
-              Marca: *<br />
-              <input type="text" value={this.state.marca}
-                onChange={this.onChangeMarca} /><br />
-              Modelo: *<br />
-                <input type="text" value={this.state.modelo}
-                  onChange={this.onChangeModelo} /><br />
-              Ano: <br />
-              <input type="text" value={this.state.ano}
-                onChange={this.onChangeAno} /><br />
-              Placa: *<br />
-              <input type="text" value={this.state.placa}
-                onChange={this.onChangePlaca} /><br />
-              <DateField value={ this.state.data } onChange={ (e) => {this.onChangeData(e)}}/>
-              <br />
-              <br />
-              <input type="submit" value="Enviar" />
-              <input type="button" value="Limpar"
-                onClick={this.onReset} />
-              * Campos obrigatórios
+              <legend>Novo agendamento</legend>
+              <div className="form">
+                <section className="field-1">
+                    {/* <p>Nome completo: *</p> */}
+                    <input type="text" value={this.state.nome}
+                      onChange={this.onChangeNome} placeholder="Nome Completo"/>
+
+                    {/* <p>Telefone:</p>  */}
+                    <input type="text" value={this.state.telefone}
+                      onChange={this.onChangeTelefone} placeholder="Telefone"/>
+                  </section>
+                <section className="field-2">
+                  <p>Possui WhatsApp?: </p>  
+                  <Switch
+                    checked={this.state.whatsapp}
+                    onChange={this.onChangeWhatsapp}
+                    name="whatsApp"
+                    inputProps={{ 'aria-label': 'whatsapp checkbox' }}
+                  />
+                  {/* <input type="checkbox" checked={this.state.whatsapp}
+                    onChange={this.onChangeWhatsapp} /> */}
+                </section>
+                <section className="field-3">
+                  {/* Marca: * */}
+                  <input type="text" value={this.state.marca}
+                    onChange={this.onChangeMarca} placeholder="Marca"/>
+                  {/* Modelo: * */}
+                    <input type="text" value={this.state.modelo}
+                      onChange={this.onChangeModelo} placeholder="Modelo"/>
+                </section>
+                <section className="field-4">
+                  {/* Ano:  */}
+                  <input type="text" value={this.state.ano}
+                    onChange={this.onChangeAno} placeholder="Ano"/>
+                  {/* Placa: * */}
+                  <input type="text" value={this.state.placa}
+                    onChange={this.onChangePlaca} placeholder ="Placa"/>
+                </section>
+                  <DateField value={ this.state.data } onChange={ (e) => {this.onChangeData(e)}}/>
+                <br />
+                <br />
+                <section className="buttons">
+                  <button type="submit">Enviar</button>
+                  <button type="button" value="Limpar"
+                    onClick={this.onReset}>Limpar</button>
+                </section>
+                * Campos obrigatórios
+              </div>
           </fieldset>
         </form>
-        {
+        {/* {
           contexto.erros && <ul>{erros}</ul>
         }
 
         <h2>Dados recebidos:</h2>
-        { contexto.usuario && <ul>{usuario}</ul> }
+        { contexto.usuario && <ul>{usuario}</ul> } */}
       </>
     ); // fim do return
   } // fim do render()  
