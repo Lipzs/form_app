@@ -81,55 +81,58 @@ export default class form extends Component {
       modelo: this.state.modelo,
       idade: this.state.idade,
       placa: this.state.placa,
-      data: this.state.data
+      data: this.state.data,
+      ano: this.state.ano,
+      contexto: this.state.contexto
     }; 
 
 
     try {
       const response = await api.post('schedule', usuario);
       console.log(response.data);
+      this.setState({contexto: response.data})
     } catch(e) {
       console.log(e.response.data);
     }
       // .catch(erro => this.setState({ contexto: erro.response.data }));
 
-    this.setState(this.baseState);
+    // this.setState(this.baseState);
   }
 
   render() {
-    const contexto = this.state.contexto;
+    const contexto = (this.state.contexto);
     let erros = [];
     if (contexto.erros) {
       erros = contexto.erros.map(
         (erro, idx) => (
           <li key={idx}>{erro.msg}</li>));
     }
-    let usuario = [];
-    if (contexto.usuario) {
-      usuario = [
+    let agendamento = [];
+    if (contexto.dados) {
+      agendamento = [
         (<li key='1'>
-          <b>Nome:</b> {contexto.usuario.nome}
+          <b>Nome:</b> {contexto.dados.nome}
         </li>),
         (<li key='2'>
-          <b>Telefone:</b> {contexto.usuario.telefone}
+          <b>Telefone:</b> {contexto.dados.telefone}
         </li>),
         (<li key='3'>
-          <b>Possui whatsapp?:</b> {contexto.usuario.whatsapp}
+          <b>Possui whatsapp?:</b> {contexto.dados.whatsapp}
         </li>),
         (<li key='4'>
-          <b>Marca:</b> {contexto.usuario.marca}
+          <b>Marca:</b> {contexto.dados.marca}
         </li>),
         (<li key='5'>
-          <b>Modelo:</b> {contexto.usuario.modelo}
+          <b>Modelo:</b> {contexto.dados.modelo}
         </li>),
         (<li key='6'>
-          <b>Ano:</b> {contexto.usuario.ano}
+          <b>Ano:</b> {contexto.dados.ano}
         </li>),
         (<li key='7'>
-          <b>Placa:</b> {contexto.usuario.placa}
+          <b>Placa:</b> {contexto.dados.placa}
         </li>),
         (<li key='8'>
-          <b>Data:</b> {contexto.usuario.data}
+          <b>Data:</b> {contexto.dados.data}
         </li>)
       ]
     }
@@ -146,32 +149,35 @@ export default class form extends Component {
                 <section className="field-1">
                     {/* <p>Nome completo: *</p> */}
                     <input type="text" value={this.state.nome}
-                      onChange={this.onChangeNome} placeholder="Nome Completo*"/>
+                      onChange={this.onChangeNome} placeholder="Nome Completo*" required/>
 
                     {/* <p>Telefone:</p>  */}
                     <input type="text" value={this.state.telefone}
-                      onChange={this.onChangeTelefone} placeholder="Telefone"/>
+                      onChange={this.onChangeTelefone} placeholder="Celular (99) 99999-9999"
+                      />
                   </section>
                 <section className="field-2">
-                  {this.state.telefone !== '' && <p>Possui WhatsApp?: </p>}
-                  {this.state.telefone !== '' && 
-                    (<Switch
-                      checked={this.state.whatsapp}
-                      onChange={this.onChangeWhatsapp}
-                      name="whatsApp"
-                      inputProps={{ 'aria-label': 'whatsapp checkbox' }}
-                    />)
-                  }
+                  {this.state.telefone !== '' && (
+                    <section>
+                      <p>Possui WhatsApp?: </p>
+                      <Switch
+                        checked={this.state.whatsapp}
+                        onChange={this.onChangeWhatsapp}
+                        name="whatsApp"
+                        inputProps={{ 'aria-label': 'whatsapp checkbox' }}
+                      />
+                    </section>
+                  )}
                   {/* <input type="checkbox" checked={this.state.whatsapp}
                     onChange={this.onChangeWhatsapp} /> */}
                 </section>
                 <section className="field-3">
                   {/* Marca: * */}
                   <input type="text" value={this.state.marca}
-                    onChange={this.onChangeMarca} placeholder="Marca*"/>
+                    onChange={this.onChangeMarca} placeholder="Marca*" required/>
                   {/* Modelo: * */}
                     <input type="text" value={this.state.modelo}
-                      onChange={this.onChangeModelo} placeholder="Modelo*"/>
+                      onChange={this.onChangeModelo} placeholder="Modelo*" required/>
                 </section>
                 <section className="field-4">
                   {/* Ano:  */}
@@ -179,7 +185,7 @@ export default class form extends Component {
                     onChange={this.onChangeAno} placeholder="Ano"/>
                   {/* Placa: * */}
                   <input type="text" value={this.state.placa}
-                    onChange={this.onChangePlaca} placeholder ="Placa*"/>
+                    onChange={this.onChangePlaca} placeholder ="Placa *" required/>
                 </section>
                   <DateField value={ this.state.data } onChange={ (e) => {this.onChangeData(e)}}/>
                 <br />
@@ -193,12 +199,12 @@ export default class form extends Component {
               </div>
           </fieldset>
         </form>
-        {/* {
+        {
           contexto.erros && <ul>{erros}</ul>
         }
 
         <h2>Dados recebidos:</h2>
-        { contexto.usuario && <ul>{usuario}</ul> } */}
+        { contexto.dados && <ul>{agendamento}</ul> }
       </>
     ); // fim do return
   } // fim do render()  
