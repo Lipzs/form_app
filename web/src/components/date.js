@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DateAndTimePickers = () => {
+const DateAndTimePickers = ({onChange, data}) => {
   const classes = useStyles();
 
   return (
@@ -23,7 +23,8 @@ const DateAndTimePickers = () => {
         id="datetime-local"
         label="Agendamento"
         type="datetime-local"
-        defaultValue="2021-05-24T10:30"
+        onChange={(e) => { onChange(e) }}
+        defaultValue={ data }
         className={classes.textField}
         InputLabelProps={{
           shrink: true,

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import api from '../../services/api';
 
 import DateField from '../../components/date';
 
@@ -7,7 +7,6 @@ export default class form extends Component {
 
   constructor(props) {
     super(props);
-    this.backendUrl = 'http://localhost:9950/usuarios';
 
     this.baseState = {
       nome: '',
@@ -17,7 +16,7 @@ export default class form extends Component {
       modelo: '',
       ano: '',
       placa: '',
-      data: '',
+      data: new Date(),
       contexto: {}
     } 
     this.state = this.baseState;
@@ -39,7 +38,7 @@ export default class form extends Component {
   }
 
   onChangeTelefone(e) {
-    this.setState({ email: e.target.value })
+    this.setState({ telefone: e.target.value })
   }
 
   onChangeWhatsapp(e) {
@@ -68,7 +67,7 @@ export default class form extends Component {
     this.setState(this.baseState);
   }
 
-  onSubmit(e) {
+  async onSubmit(e) {
     e.preventDefault();
 
     const usuario = {
@@ -79,11 +78,16 @@ export default class form extends Component {
       modelo: this.state.modelo,
       idade: this.state.idade,
       placa: this.state.placa,
-      data: this.state.data,
+      data: this.state.data
     }; 
 
-    axios.post(this.backendUrl, usuario)
-      .then(res => this.setState({ contexto: res.data }))
+
+    try {
+      const response = await api.post('schedule', usuario);
+      console.log(response.data);
+    } catch(e) {
+      console.log(e.response.data);
+    }
       // .catch(erro => this.setState({ contexto: erro.response.data }));
 
     this.setState(this.baseState);
@@ -136,28 +140,28 @@ export default class form extends Component {
             <fieldset>
               <legend>Novo Usuário</legend>
               Nome completo: *<br />
-                <input type="text" value={this.state.nome}
-                  onChange={this.onChangeNome} /><br />
+              <input type="text" value={this.state.nome}
+                onChange={this.onChangeNome} /><br />
               Telefone: <br />
-                <input type="text" value={this.state.email}
-                  onChange={this.onChangeTelefone} /><br />
-              Possui WhatsApp?: * 
+              <input type="text" value={this.state.telefone}
+                onChange={this.onChangeTelefone} /><br />
+              Possui WhatsApp?:  
               <input type="checkbox" checked={this.state.whatsapp}
                 onChange={this.onChangeWhatsapp} />
               <br />
               Marca: *<br />
-                <input type="text" value={this.state.marca}
-                  onChange={this.onChangeMarca} /><br />
+              <input type="text" value={this.state.marca}
+                onChange={this.onChangeMarca} /><br />
               Modelo: *<br />
                 <input type="text" value={this.state.modelo}
                   onChange={this.onChangeModelo} /><br />
-              Ano: *<br />
+              Ano: <br />
               <input type="text" value={this.state.ano}
                 onChange={this.onChangeAno} /><br />
-              Placa:<br />
+              Placa: *<br />
               <input type="text" value={this.state.placa}
                 onChange={this.onChangePlaca} /><br />
-              <DateField value={this.state.data} onChange={this.onChangeDate}/>
+              <DateField value={ this.state.data } onChange={ (e) => {this.onChangeData(e)}}/>
               <br />
               <br />
               <input type="submit" value="Enviar" />
