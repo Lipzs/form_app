@@ -4,6 +4,8 @@ form {
   margin: 80px auto;
   padding: 64px;
 
+  border: 1px solid;
+
   border-radius: 8px;
 
   max-width: 730px;
@@ -99,7 +101,7 @@ form button{
 }
 
 form button:hover{
-  background-color: #2fb86e;
+  background-color: #DD284E;
 }
 
 .buttons {

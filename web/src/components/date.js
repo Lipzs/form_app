@@ -21,7 +21,7 @@ const DateAndTimePickers = ({onChange, data}) => {
     <form className={classes.container} noValidate>
       <TextField
         id="datetime-local"
-        label="Agendamento"
+        label="Data de agendamento"
         type="datetime-local"
         onChange={(e) => { onChange(e) }}
         defaultValue={ data }

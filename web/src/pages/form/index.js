@@ -146,30 +146,32 @@ export default class form extends Component {
                 <section className="field-1">
                     {/* <p>Nome completo: *</p> */}
                     <input type="text" value={this.state.nome}
-                      onChange={this.onChangeNome} placeholder="Nome Completo"/>
+                      onChange={this.onChangeNome} placeholder="Nome Completo*"/>
 
                     {/* <p>Telefone:</p>  */}
                     <input type="text" value={this.state.telefone}
                       onChange={this.onChangeTelefone} placeholder="Telefone"/>
                   </section>
                 <section className="field-2">
-                  <p>Possui WhatsApp?: </p>  
-                  <Switch
-                    checked={this.state.whatsapp}
-                    onChange={this.onChangeWhatsapp}
-                    name="whatsApp"
-                    inputProps={{ 'aria-label': 'whatsapp checkbox' }}
-                  />
+                  {this.state.telefone !== '' && <p>Possui WhatsApp?: </p>}
+                  {this.state.telefone !== '' && 
+                    (<Switch
+                      checked={this.state.whatsapp}
+                      onChange={this.onChangeWhatsapp}
+                      name="whatsApp"
+                      inputProps={{ 'aria-label': 'whatsapp checkbox' }}
+                    />)
+                  }
                   {/* <input type="checkbox" checked={this.state.whatsapp}
                     onChange={this.onChangeWhatsapp} /> */}
                 </section>
                 <section className="field-3">
                   {/* Marca: * */}
                   <input type="text" value={this.state.marca}
-                    onChange={this.onChangeMarca} placeholder="Marca"/>
+                    onChange={this.onChangeMarca} placeholder="Marca*"/>
                   {/* Modelo: * */}
                     <input type="text" value={this.state.modelo}
-                      onChange={this.onChangeModelo} placeholder="Modelo"/>
+                      onChange={this.onChangeModelo} placeholder="Modelo*"/>
                 </section>
                 <section className="field-4">
                   {/* Ano:  */}
@@ -177,7 +179,7 @@ export default class form extends Component {
                     onChange={this.onChangeAno} placeholder="Ano"/>
                   {/* Placa: * */}
                   <input type="text" value={this.state.placa}
-                    onChange={this.onChangePlaca} placeholder ="Placa"/>
+                    onChange={this.onChangePlaca} placeholder ="Placa*"/>
                 </section>
                   <DateField value={ this.state.data } onChange={ (e) => {this.onChangeData(e)}}/>
                 <br />
