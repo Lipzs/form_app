@@ -1,8 +1,8 @@
 function dateValidator(date) {
 
-  const splitedData = date.split('T');
-  const dt = splitedData[0].split('-');
-  const hr = splitedData[1].split(':');
+  const splitedDate = date.split('T');
+  const dt = splitedDate[0].split('-');
+  const hr = splitedDate[1].split(':');
 
   const hour = hr[0];
   const minute = hr[1];

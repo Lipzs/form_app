@@ -3,209 +3,188 @@ import api from '../../services/api';
 
 import DateField from '../../components/date';
 import Switch from '@material-ui/core/Switch';
+import SuccessModal from '../../components/successModal';
 
-import './styles.css'
+import './styles.css';
 
 export default class form extends Component {
 
   constructor(props) {
     super(props);
+    this.today = new Date();
 
     this.baseState = {
-      nome: '',
-      telefone: '',
+      name: '',
+      cellphone: '',
       whatsapp: false,
-      marca: '',
-      modelo: '',
-      ano: '',
-      placa: '',
-      data: new Date(),
-      contexto: {}
-    } 
+      brand: '',
+      model: '',
+      year: '',
+      licensePlate: '',
+      date: new Date(),
+      context: {},
+      open: false,
+      success: {
+        title: '',
+        description: ''
+      }
+    }
     this.state = this.baseState;
 
-    this.onChangeNome = this.onChangeNome.bind(this);
-    this.onChangeTelefone = this.onChangeTelefone.bind(this);
+    this.onChangeName = this.onChangeName.bind(this);
+    this.onChangeCellphone = this.onChangeCellphone.bind(this);
     this.onChangeWhatsapp = this.onChangeWhatsapp.bind(this);
-    this.onChangeMarca = this.onChangeMarca.bind(this);
-    this.onChangeModelo = this.onChangeModelo.bind(this);
-    this.onChangeAno = this.onChangeAno.bind(this);
-    this.onChangePlaca = this.onChangePlaca.bind(this);
-    this.onChangeData = this.onChangeData.bind(this);
+    this.onChangeBrand = this.onChangeBrand.bind(this);
+    this.onChangeModel = this.onChangeModel.bind(this);
+    this.onChangeYear = this.onChangeYear.bind(this);
+    this.onChangeLicensePlate = this.onChangeLicensePlate.bind(this);
+    this.onChangeDate = this.onChangeDate.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.onReset = this.onReset.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
-  onChangeNome(e) {
-    this.setState({ nome: e.target.value })
+  onChangeName(e) {
+    this.setState({ name: e.target.value })
   }
 
-  onChangeTelefone(e) {
-    this.setState({ telefone: e.target.value })
+  onChangeCellphone(e) {
+    this.setState({ cellphone: e.target.value })
   }
 
   onChangeWhatsapp(e) {
     this.setState({ whatsapp: e.target.checked })
   }
-  onChangeMarca(e) {
-    this.setState({ marca: e.target.value })
+  onChangeBrand(e) {
+    this.setState({ brand: e.target.value })
   }
 
-  onChangeModelo(e) {
-    this.setState({ modelo: e.target.value })
+  onChangeModel(e) {
+    this.setState({ model: e.target.value })
   }
 
-  onChangeAno(e) {
-    this.setState({ ano: e.target.value })
+  onChangeYear(e) {
+    this.setState({ year: e.target.value })
   }
-  onChangePlaca(e) {
-    this.setState({ placa: e.target.value })
+  onChangeLicensePlate(e) {
+    this.setState({ licensePlate: e.target.value })
   }
 
-  onChangeData(e) {
-    this.setState({ data: e.target.value })
+  onChangeDate(e) {
+    this.setState({ date: e.target.value })
   }
 
   onReset(e) {
     this.setState(this.baseState);
   }
 
+  handleClose() {
+    this.setState({ open: false });
+  }
+
   async onSubmit(e) {
     e.preventDefault();
 
-    const usuario = {
-      nome: this.state.nome,
-      telefone: this.state.telefone,
+    const scheduleObj = {
+      name: this.state.name,
+      cellphone: this.state.cellphone,
       whatsapp: this.state.whatsapp,
-      marca: this.state.marca,
-      modelo: this.state.modelo,
-      idade: this.state.idade,
-      placa: this.state.placa,
-      data: this.state.data,
-      ano: this.state.ano,
-      contexto: this.state.contexto
-    }; 
-
+      brand: this.state.brand,
+      model: this.state.model,
+      licensePlate: this.state.licensePlate,
+      date: this.state.date,
+      year: this.state.year,
+      context: this.state.context
+    };
 
     try {
-      const response = await api.post('schedule', usuario);
-      console.log(response.data);
-      this.setState({contexto: response.data})
-    } catch(e) {
-      console.log(e.response.data);
-    }
-      // .catch(erro => this.setState({ contexto: erro.response.data }));
+      const response = await api.post('schedule', scheduleObj);
+      const receivedData = response.data;
+      const dateOfSchedule = (receivedData.data.date).split('T')[0];
 
-    // this.setState(this.baseState);
+      this.setState({ context: receivedData });
+
+      if (response.status === 200) {
+        this.setState({
+          success: {
+            title: 'Agendamento efetuado com successo',
+            description: `Seu agendamento foi efetuado para a data ${dateOfSchedule}`
+          }
+        })
+      }
+
+      this.setState({ open: true });
+    } catch (err) {
+      this.setState({
+        success: {
+          title: 'Ops... Encontramos alguns problemas :(',
+          description: err.response.data.errors
+        }
+      })
+
+      this.setState({ open: true });
+    }
   }
 
   render() {
-    const contexto = (this.state.contexto);
-    let erros = [];
-    if (contexto.erros) {
-      erros = contexto.erros.map(
-        (erro, idx) => (
-          <li key={idx}>{erro.msg}</li>));
-    }
-    let agendamento = [];
-    if (contexto.dados) {
-      agendamento = [
-        (<li key='1'>
-          <b>Nome:</b> {contexto.dados.nome}
-        </li>),
-        (<li key='2'>
-          <b>Telefone:</b> {contexto.dados.telefone}
-        </li>),
-        (<li key='3'>
-          <b>Possui whatsapp?:</b> {contexto.dados.whatsapp}
-        </li>),
-        (<li key='4'>
-          <b>Marca:</b> {contexto.dados.marca}
-        </li>),
-        (<li key='5'>
-          <b>Modelo:</b> {contexto.dados.modelo}
-        </li>),
-        (<li key='6'>
-          <b>Ano:</b> {contexto.dados.ano}
-        </li>),
-        (<li key='7'>
-          <b>Placa:</b> {contexto.dados.placa}
-        </li>),
-        (<li key='8'>
-          <b>Data:</b> {contexto.dados.data}
-        </li>)
-      ]
-    }
-
     return (
       <>
-        <h1>
-          Form App
-        </h1>
-          <form onSubmit={this.onSubmit}>
-            <fieldset>
-              <legend>Novo agendamento</legend>
-              <div className="form">
-                <section className="field-1">
-                    {/* <p>Nome completo: *</p> */}
-                    <input type="text" value={this.state.nome}
-                      onChange={this.onChangeNome} placeholder="Nome Completo*" required/>
-
-                    {/* <p>Telefone:</p>  */}
-                    <input type="text" value={this.state.telefone}
-                      onChange={this.onChangeTelefone} placeholder="Celular (99) 99999-9999"
-                      />
+        <form onSubmit={this.onSubmit}>
+          <fieldset>
+            <legend>Novo agendamento</legend>
+            <div className="form">
+              <section className="field-1">
+                <input type="text" value={this.state.name}
+                  onChange={this.onChangeName} placeholder="Nome Completo*" required />
+                <input type="text" value={this.state.cellphone}
+                  onChange={this.onChangeCellphone} placeholder="Celular (99) 99999-9999"
+                />
+              </section>
+              <section className="field-2">
+                {this.state.cellphone !== '' && (
+                  <section>
+                    <p>Possui WhatsApp?: </p>
+                    <Switch
+                      checked={this.state.whatsapp}
+                      onChange={this.onChangeWhatsapp}
+                      name="whatsApp"
+                      inputProps={{ 'aria-label': 'whatsapp checkbox' }}
+                    />
                   </section>
-                <section className="field-2">
-                  {this.state.telefone !== '' && (
-                    <section>
-                      <p>Possui WhatsApp?: </p>
-                      <Switch
-                        checked={this.state.whatsapp}
-                        onChange={this.onChangeWhatsapp}
-                        name="whatsApp"
-                        inputProps={{ 'aria-label': 'whatsapp checkbox' }}
-                      />
-                    </section>
-                  )}
-                  {/* <input type="checkbox" checked={this.state.whatsapp}
-                    onChange={this.onChangeWhatsapp} /> */}
-                </section>
-                <section className="field-3">
-                  {/* Marca: * */}
-                  <input type="text" value={this.state.marca}
-                    onChange={this.onChangeMarca} placeholder="Marca*" required/>
-                  {/* Modelo: * */}
-                    <input type="text" value={this.state.modelo}
-                      onChange={this.onChangeModelo} placeholder="Modelo*" required/>
-                </section>
-                <section className="field-4">
-                  {/* Ano:  */}
-                  <input type="text" value={this.state.ano}
-                    onChange={this.onChangeAno} placeholder="Ano"/>
-                  {/* Placa: * */}
-                  <input type="text" value={this.state.placa}
-                    onChange={this.onChangePlaca} placeholder ="Placa *" required/>
-                </section>
-                  <DateField value={ this.state.data } onChange={ (e) => {this.onChangeData(e)}}/>
-                <br />
-                <br />
-                <section className="buttons">
-                  <button type="submit">Enviar</button>
-                  <button type="button" value="Limpar"
-                    onClick={this.onReset}>Limpar</button>
-                </section>
+                )}
+              </section>
+              <section className="field-3">
+                <input type="text" value={this.state.brand}
+                  onChange={this.onChangeBrand} placeholder="Marca*" required />
+                <input type="text" value={this.state.model}
+                  onChange={this.onChangeModel} placeholder="Modelo*" required />
+              </section>
+              <section className="field-4">
+                <input type="text" value={this.state.year}
+                  onChange={this.onChangeYear} placeholder="Ano" />
+                <input type="text" value={this.state.licensePlate}
+                  onChange={this.onChangeLicensePlate} placeholder="Placa *" required />
+              </section>
+              <DateField value={this.state.date} min={this.today} onChange={(e) => { this.onChangeDate(e) }} />
+              <br />
+              <br />
+              <section className="buttons">
+                <button type="submit">Enviar</button>
+                <button type="button" value="Limpar"
+                  onClick={this.onReset}>Limpar</button>
+              </section>
                 * Campos obrigatórios
               </div>
           </fieldset>
         </form>
-        {
-          contexto.erros && <ul>{erros}</ul>
-        }
 
-        <h2>Dados recebidos:</h2>
-        { contexto.dados && <ul>{agendamento}</ul> }
+        <SuccessModal
+          open={this.state.open}
+          handleClose={() => { this.handleClose() }}
+          description={this.state.success.description}
+          title={this.state.success.title}
+        />
       </>
-    ); // fim do return
-  } // fim do render()  
+    );
+  }
 }
