@@ -3,7 +3,7 @@ import api from '../../services/api';
 
 import DateField from '../../components/date';
 import Switch from '@material-ui/core/Switch';
-import SuccessModal from '../../components/successModal';
+import Modal from '../../components/modal';
 
 import './styles.css';
 
@@ -22,11 +22,11 @@ export default class form extends Component {
       year: '',
       licensePlate: '',
       date: new Date(),
-      context: {},
       open: false,
-      success: {
+      modalInfo: {
         title: '',
-        description: ''
+        description: '',
+        success: false
       }
     }
     this.state = this.baseState;
@@ -80,6 +80,10 @@ export default class form extends Component {
 
   handleClose() {
     this.setState({ open: false });
+
+    if(this.state.modalInfo.success) {
+      this.setState(this.baseState);
+    }
   }
 
   async onSubmit(e) {
@@ -94,31 +98,31 @@ export default class form extends Component {
       licensePlate: this.state.licensePlate,
       date: this.state.date,
       year: this.state.year,
-      context: this.state.context
     };
 
     try {
       const response = await api.post('schedule', scheduleObj);
       const receivedData = response.data;
-      const dateOfSchedule = (receivedData.data.date).split('T')[0];
-
-      this.setState({ context: receivedData });
+      const dateOfSchedule = (receivedData.formatedDate);
 
       if (response.status === 200) {
         this.setState({
-          success: {
+          modalInfo: {
             title: 'Agendamento efetuado com successo',
-            description: `Seu agendamento foi efetuado para a data ${dateOfSchedule}`
+            description: `Olá ${receivedData.data.name} seu agendamento foi
+             efetuado  com sucesso para a data ${dateOfSchedule}`,
+             success: true
           }
-        })
+        });
       }
 
       this.setState({ open: true });
     } catch (err) {
       this.setState({
-        success: {
+        modalInfo: {
           title: 'Ops... Encontramos alguns problemas :(',
-          description: err.response.data.errors
+          description: err.response.data.errors,
+          success: false
         }
       })
 
@@ -178,11 +182,11 @@ export default class form extends Component {
           </fieldset>
         </form>
 
-        <SuccessModal
+        <Modal
           open={this.state.open}
           handleClose={() => { this.handleClose() }}
-          description={this.state.success.description}
-          title={this.state.success.title}
+          description={this.state.modalInfo.description}
+          title={this.state.modalInfo.title}
         />
       </>
     );

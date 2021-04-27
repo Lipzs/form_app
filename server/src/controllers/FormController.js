@@ -3,10 +3,11 @@ import validateDate from '../utils/dateValidator.js';
 import validateCellphone from '../utils/cellphoneValidator.js';
 import validatelicensePlate from '../utils/licensePlateValidator.js';
 import validateYear from '../utils/yearValidator.js';
+import formatDate from '../utils/formatDate.js';
 
 export default class FormController {
   async doSchedule(req, res) {
-    const errorMessage = 'Não foi possível agendar pois existem campos vazios';
+    const errorMessage = 'Não foi possível agendar pois os seguintes estão campos vazios:';
     const { name, brand, model, licensePlate, date } = req.body;
     const isCellNumber = validateCellphone(req.body.cellphone);
 
@@ -53,6 +54,9 @@ export default class FormController {
       });
     }
     
-    return res.status(200).json({ data: req.body });
+    return res.status(200).json({ 
+      data: req.body,
+      formatedDate: formatDate(date)
+     });
   }
 }
