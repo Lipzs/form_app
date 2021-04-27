@@ -181,7 +181,7 @@ const Form = () => {
               <button type="submit">Enviar</button> 
             </Grid>
             <Grid item xs={6}>
-              <button type="reset" value="Limpar">Limpar</button>
+              <button type="button" value="Limpar" onClick={clearFields}>Limpar</button>
             </Grid>
           </Grid>
         </form>
