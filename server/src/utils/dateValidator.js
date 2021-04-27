@@ -18,8 +18,9 @@ function dateValidator(date) {
 
   const userDay = new Date(`${dt[0]}/${dt[1]}/${dt[2]}`).setHours(hour, minute);
 
-  return ((hour <= 18 && hour >= 8)
-     && (minute == 30 || minute == 0) && (isBusinessDay) && (userDay > new Date())); 
+  return ( ((hour < 18 && hour > 8) && (minute == 30 || minute == 0) && (isBusinessDay) && (userDay > new Date()))
+    || ((hour == 18 && minute == 0) || (hour == 8 && minute == 0))
+  ); 
   
 }
 
